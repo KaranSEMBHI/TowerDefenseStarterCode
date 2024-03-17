@@ -1,5 +1,12 @@
 using UnityEngine;
 
+public enum SiteLevel
+{
+    Unbuilt,
+    Level1,
+    Level2,
+    Level3
+}
 
 public class ConstructionSite
 {
@@ -12,7 +19,7 @@ public class ConstructionSite
     public ConstructionSite(Vector3Int tilePosition, Vector3 worldPosition)
     {
         TilePosition = tilePosition;
-        WorldPosition = worldPosition + new Vector3(0, 0.5f, 0); 
+        WorldPosition = worldPosition + new Vector3(0, 0.5f, 0);
         Level = SiteLevel.Unbuilt;
         tower = null;
     }
