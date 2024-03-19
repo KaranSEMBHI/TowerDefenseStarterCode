@@ -7,7 +7,7 @@ public class Enemy : MonoBehaviour
     public float speed = 1f;
     public float health = 10f;
     public int points = 1;
-    public Path path { get; set; }
+    public Enums.Path path { get; set; }
     public GameObject target { get; set; }
     private int pathIndex = 1;
 
@@ -32,4 +32,17 @@ public class Enemy : MonoBehaviour
             }
         }
     }
+    public void Damage(int damage)
+    {
+        // Verminder de gezondheidswaarde
+        health -= damage;
+
+        // Controleer of de gezondheid kleiner is dan of gelijk is aan nul
+        if (health <= 0)
+        {
+            // Vernietig het spelobject
+            Destroy(gameObject);
+        }
+    }
+
 }

@@ -26,9 +26,9 @@ public class EnemySpawner : MonoBehaviour
         InvokeRepeating("SpawnTester", 1f, 1f);
     }
 
-    private void SpawnEnemy(int type, Path path)
+    private void SpawnEnemy(int type, Enums.Path path)
     {
-        List<GameObject> selectedPath = path == Path.Path1 ? Path1 : Path2;
+        List<GameObject> selectedPath = path == Enums.Path.Path1 ? Path1 : Path2;
 
         if (selectedPath.Count < 2)
         {
@@ -44,12 +44,12 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnTester()
     {
-        SpawnEnemy(0, Path.Path1);
+        SpawnEnemy(0, Enums.Path.Path1);
     }
 
-    public GameObject RequestTarget(Path path, int index)
+    public GameObject RequestTarget(Enums.Path path, int index)
     {
-        List<GameObject> selectedPath = path == Path.Path1 ? Path1 : Path2;
+        List<GameObject> selectedPath = path == Enums.Path.Path1 ? Path1 : Path2;
 
         if (index < selectedPath.Count)
             return selectedPath[index];

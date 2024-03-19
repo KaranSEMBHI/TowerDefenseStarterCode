@@ -1,10 +1,12 @@
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
+using UnityEngine;
 
 public class TileClickDetector : MonoBehaviour
 {
+
+
     public Camera cam; // Assign your main camera here through the Inspector 
     public Tilemap tilemap; // Assign your tilemap here through the Inspector 
 
@@ -14,8 +16,6 @@ public class TileClickDetector : MonoBehaviour
     private List<ConstructionSite> sites = new List<ConstructionSite>();
 
     public ConstructionSite SelectedSite { get; private set; }
-
-    private GameManager gameManager;
 
     private void Start()
     {
@@ -36,12 +36,6 @@ public class TileClickDetector : MonoBehaviour
             }
         }
 
-        //Find the GameManager in the scene and set a reference
-        gameManager = FindObjectOfType<GameManager>();
-       if (gameManager == null)
-       {
-            Debug.LogError("GameManager not found in the scene!");
-       }
     }
 
     // Update is called once per frame 
@@ -56,6 +50,7 @@ public class TileClickDetector : MonoBehaviour
 
     void DetectTileClicked()
     {
+        // Convert mouse click position to world space 
         Vector3 mouseWorldPos = cam.ScreenToWorldPoint(Input.mousePosition);
         mouseWorldPos.z = 0; // Ensure the z-position is set correctly for 2D 
 
@@ -68,6 +63,7 @@ public class TileClickDetector : MonoBehaviour
 
         if (clickedTile != null)
         {
+            Debug.Log($"Tile clicked: {clickedTile.name}");
             // Tile was clicked - you can check specific properties or tile types here 
 
             // Example: Check for a specific tile (by name, for instance) 
@@ -87,12 +83,11 @@ public class TileClickDetector : MonoBehaviour
             {
                 SelectedSite = null;
             }
-
-            // If a valid construction site is selected, notify the GameManager
-            if (SelectedSite != null && gameManager != null)
-            {
-                gameManager.SelectSite(SelectedSite);
-            }
         }
+        else
+        {
+            SelectedSite = null;
+        }
+        GameManager.Instance.SelectSite(SelectedSite);
     }
 }

@@ -97,9 +97,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62e1851476429f340b01b4ef422b13d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackRange: 3
-  attackRate: 3
-  attackDamage: 3
+  attackRange: 15
+  attackRate: 15
+  attackDamage: 15
   attackSize: 3
   projectileSpeed: 15
   bulletPrefab: {fileID: 7197996562539605061, guid: cc28cfab1ad911441b73e4497c777692, type: 3}

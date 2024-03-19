@@ -29,11 +29,16 @@ public class Projectile : MonoBehaviour
         // Move the projectile towards the target
         transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
 
-        // Check if the distance between this object and
-        // the target is smaller than 0.2. If so, destroy this object.
-        if (Vector3.Distance(transform.position, target.position) < 0.2f)
+        // finally, check if the distance between this object and 
+
+        // the target is smaller than 0.2. If so, destroy this object. 
+
+        if (Vector2.Distance(transform.position, target.position) < 0.2f)
+
         {
+            target.GetComponent<Enemy>().Damage(damage);
             Destroy(gameObject);
+
         }
     }
 }

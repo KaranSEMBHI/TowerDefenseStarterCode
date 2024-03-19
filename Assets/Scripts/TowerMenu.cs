@@ -1,12 +1,8 @@
-using UnityEngine;
 using UnityEngine.UIElements;
-using System;
+using UnityEngine;
 
 public class TowerMenu : MonoBehaviour
 {
-    public event Action<ConstructionSite> SiteSelected;
-    public event Action MenuUpdated;
-
     private Button archerButton;
     private Button swordButton;
     private Button wizardButton;
@@ -16,39 +12,16 @@ public class TowerMenu : MonoBehaviour
     private VisualElement root;
 
     private ConstructionSite selectedSite;
-    private GameManager gameManager;
 
-    // Singleton instance
-    private static TowerMenu _instance;
-    public static TowerMenu Instance => _instance;
-
-    // Methode om de singleton instantie te initialiseren
-    private void Awake()
-    {
-        // Controleer of er al een instantie van TowerMenu is
-        if (_instance != null && _instance != this)
-        {
-            // Als dat zo is, vernietig deze instantie
-            Destroy(gameObject);
-            return;
-        }
-
-        // Als er geen instantie is, maak deze instantie de singleton
-        _instance = this;
-
-        // Zorg ervoor dat dit GameObject niet wordt vernietigd bij het laden van een nieuwe scene
-        DontDestroyOnLoad(gameObject);
-    }
-
-    void Start()
+    private void Start()
     {
         root = GetComponent<UIDocument>().rootVisualElement;
 
-        archerButton = root.Q<Button>("archer-button");
-        swordButton = root.Q<Button>("sword-button");
-        wizardButton = root.Q<Button>("wizard-button");
-        updateButton = root.Q<Button>("button-upgrade");
-        destroyButton = root.Q<Button>("button-destroy");
+        archerButton = root.Q<Button>("archerButton");
+        swordButton = root.Q<Button>("swordButton");
+        wizardButton = root.Q<Button>("wizardButton");
+        updateButton = root.Q<Button>("updateButton");
+        destroyButton = root.Q<Button>("destroyButton");
 
         if (archerButton != null)
         {
@@ -80,27 +53,33 @@ public class TowerMenu : MonoBehaviour
 
     private void OnArcherButtonClicked()
     {
-        // Implementeer de logica voor de boogschutter knop
+        GameManager.Instance.Build(Enums.TowerType.Archer, Enums.SiteLevel.Level1);
     }
 
     private void OnSwordButtonClicked()
     {
-        // Implementeer de logica voor de zwaard knop
+        GameManager.Instance.Build(Enums.TowerType.Sword, Enums.SiteLevel.Level1);
     }
 
     private void OnWizardButtonClicked()
     {
-        // Implementeer de logica voor de tovenaar knop
+        GameManager.Instance.Build(Enums.TowerType.Wizard, Enums.SiteLevel.Level1);
     }
 
     private void OnUpdateButtonClicked()
     {
-        // Implementeer de logica voor de update knop
+        if (selectedSite == null) return;
+
+        Enums.SiteLevel nextLevel = selectedSite.Level + 1; // Verhoog het level met één.
+        GameManager.Instance.Build(selectedSite.TowerType, nextLevel);
     }
 
     private void OnDestroyButtonClicked()
     {
-        // Implementeer de logica voor de vernietig knop
+        if (selectedSite == null) return;
+
+        // Roep de nieuwe DestroyTower methode aan
+        GameManager.Instance.DestroyTower();
     }
 
     private void OnDestroy()
@@ -131,18 +110,6 @@ public class TowerMenu : MonoBehaviour
         }
     }
 
-    // Functie om het menu te evalueren op basis van de geselecteerde bouwplaats
-    public void EvaluateMenu()
-    {
-        if (selectedSite == null)
-            return;
-
-        // Implementeer de logica om het menu te evalueren
-
-        MenuUpdated?.Invoke(); // Event aanroepen om de GameManager te informeren over de menu-update
-    }
-
-    // Functie om een bouwplaats in te stellen en het menu te updaten
     public void SetSite(ConstructionSite site)
     {
         selectedSite = site;
@@ -152,21 +119,49 @@ public class TowerMenu : MonoBehaviour
             root.visible = false;
             return;
         }
-        root.visible = true;
-        EvaluateMenu();
-
-        SiteSelected?.Invoke(selectedSite); // Event aanroepen om de GameManager te informeren over de geselecteerde bouwplaats
+        else
+        {
+            root.visible = true;
+            EvaluateMenu();
+        }
     }
 
-    // Functie om een referentie naar de GameManager in te stellen
-    public void SetGameManager(GameManager manager)
+    public void EvaluateMenu()
     {
-        gameManager = manager;
-    }
+        if (selectedSite == null)
+        {
+            return; // Vroegtijdig terugkeren als er geen site geselecteerd is.
+        }
 
-    // Voorbeeldmethode om de GameManager te informeren over een menu-update
-    public void NotifyGameManagerOfMenuUpdate()
-    {
-        Debug.Log("TowerMenu informs GameManager of menu update.");
+        // Standaard alle knoppen uitschakelen
+        archerButton.SetEnabled(false);
+        swordButton.SetEnabled(false);
+        wizardButton.SetEnabled(false);
+        updateButton.SetEnabled(false);
+        destroyButton.SetEnabled(false);
+
+        switch (selectedSite.Level)
+        {
+            case Enums.SiteLevel.Unbuilt:
+                // Als de Level Onbebouwd is, schakel de bouwknoppen in
+                archerButton.SetEnabled(true);
+                swordButton.SetEnabled(true);
+                wizardButton.SetEnabled(true);
+                break;
+
+            case Enums.SiteLevel.Level1:
+            case Enums.SiteLevel.Level2:
+                // Als de Level 1 of 2 is, schakel alleen update en vernietig knoppen in
+                updateButton.SetEnabled(true);
+                destroyButton.SetEnabled(true);
+                break;
+
+            case Enums.SiteLevel.Level3:
+                // Als de Level 3 is, alleen de vernietigknop inschakelen
+                destroyButton.SetEnabled(true);
+                break;
+
+                // Geen default case nodig, tenzij je onvoorziene Levels verwacht
+        }
     }
 }

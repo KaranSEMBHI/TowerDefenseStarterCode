@@ -8,7 +8,7 @@ public class Tower : MonoBehaviour
     public float attackSize = 1f; // How big the bullet looks 
     public float projectileSpeed = 1f; // Speed of the projectile
     public GameObject bulletPrefab; // The bullet prefab the tower will shoot 
-    public TowerType type; // the type of this tower 
+    public Enums.TowerType type; // the type of this tower 
 
     private float attackTimer; // Timer to keep track of attack rate
 
