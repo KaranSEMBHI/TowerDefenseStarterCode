@@ -1,0 +1,36 @@
+.Play {
+    width: 49px;
+    height: 47px;
+    background-image: url('project://database/Assets/UI%20Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=-1087164816274819069&guid=e8d8d46cd1af4d440981456019001e31&type=3#arrow-right@2x');
+    left: 124px;
+    top: 87px;
+}
+
+.Wave {
+    -unity-font-style: bold;
+    left: 128px;
+    top: 85px;
+    -unity-text-align: upper-left;
+    font-size: 14px;
+    color: rgb(255, 255, 255);
+}
+
+.Credits {
+    -unity-font-style: bold;
+    left: 128px;
+    top: 85px;
+    -unity-text-align: upper-left;
+    font-size: 14px;
+    color: rgb(255, 255, 255);
+    height: 48px;
+    width: 285px;
+}
+
+.GateHealth {
+    -unity-font-style: bold;
+    left: 128px;
+    top: 67px;
+    -unity-text-align: upper-left;
+    font-size: 14px;
+    color: rgb(255, 255, 255);
+}

@@ -1,0 +1,59 @@
+.WizardButton {
+    align-self: flex-start;
+    justify-content: space-around;
+    top: 466px;
+    left: 702px;
+    height: 63px;
+    width: 181px;
+    -unity-font-style: bold;
+    font-size: 20px;
+    background-color: rgb(255, 255, 255);
+}
+
+.SwordButton {
+    align-self: flex-start;
+    justify-content: space-around;
+    top: 397px;
+    left: 502px;
+    height: 63px;
+    width: 181px;
+    -unity-font-style: bold;
+    font-size: 20px;
+    background-color: rgb(255, 255, 255);
+}
+
+.ArcherButton {
+    align-self: flex-start;
+    justify-content: space-around;
+    top: 330px;
+    left: 302px;
+    height: 63px;
+    width: 181px;
+    -unity-font-style: bold;
+    font-size: 20px;
+    background-color: rgb(255, 255, 255);
+}
+
+.UpdateButton {
+    align-self: flex-start;
+    justify-content: space-around;
+    top: 264px;
+    left: 9px;
+    height: 63px;
+    width: 181px;
+    -unity-font-style: bold;
+    font-size: 20px;
+    background-color: rgb(33, 255, 0);
+}
+
+.DestroyButton {
+    align-self: flex-start;
+    justify-content: space-around;
+    top: 200px;
+    left: 978px;
+    height: 63px;
+    width: 181px;
+    -unity-font-style: bold;
+    font-size: 20px;
+    background-color: rgb(255, 0, 0);
+}
