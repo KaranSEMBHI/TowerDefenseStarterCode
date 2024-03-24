@@ -9,6 +9,8 @@ public class EnemySpawner : MonoBehaviour
     public List<GameObject> Path2;
     public List<GameObject> Enemies;
 
+    private int currentWave = 0;
+
     private void Awake()
     {
         if (Instance == null)
@@ -56,4 +58,20 @@ public class EnemySpawner : MonoBehaviour
         else
             return null;
     }
+    public void StartNextWave()
+    {
+        // Increment the current wave
+        currentWave++;
+        // Call a method to spawn the enemies for this wave
+        SpawnEnemiesForWave(currentWave);
+    }
+
+    // Define the SpawnEnemiesForWave method
+    private void SpawnEnemiesForWave(int waveNumber)
+    {
+        // Logic to spawn enemies based on the wave number
+        // This is just a placeholder and needs actual implementation
+        Debug.Log($"Spawning enemies for wave {waveNumber}.");
+    }
+
 }

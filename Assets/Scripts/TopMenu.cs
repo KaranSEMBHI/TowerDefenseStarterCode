@@ -8,21 +8,55 @@ public class TopMenu : MonoBehaviour
     private Label gateHealthLabel;
     private Button playButton;
 
-    private VisualElement root;
+    private UIDocument uiDocument;
 
+    private VisualElement root;
     void Start()
     {
-        root = GetComponent<UIDocument>().rootVisualElement;
+        uiDocument = GetComponent<UIDocument>();
+        if (uiDocument == null)
+        {
+            Debug.LogError("UIDocument component not found on the GameObject.");
+            return;
+        }
 
-        waveLabel = root.Q<Label>("Wave");
-        creditsLabel = root.Q<Label>("Credits");
+        root = uiDocument.rootVisualElement;
+
+        waveLabel = root.Q<Label>("wave");
+        if (waveLabel == null)
+        {
+            Debug.LogError("Wave label not found in the UI Document.");
+        }
+
+        creditsLabel = root.Q<Label>("credits");
+        if (creditsLabel == null)
+        {
+            Debug.LogError("Credits label not found in the UI Document.");
+        }
+
         gateHealthLabel = root.Q<Label>("GateHealth");
-        playButton = root.Q<Button>("Play");
+        if (gateHealthLabel == null)
+        {
+            Debug.LogError("Gate Health label not found in the UI Document.");
+        }
 
-        if (playButton != null)
+        playButton = root.Q<Button>("Play");
+        if (playButton == null)
+        {
+            Debug.LogError("Play button not found in the UI Document.");
+        }
+        else
         {
             playButton.clicked += OnPlayButtonClicked;
         }
+    }
+
+    private void OnPlayButtonClicked()
+    {
+        // The logic to start the wave should be implemented here
+        // Make sure that the EnemySpawner has a StartNextWave method implemented
+        Debug.Log("Play button clicked");
+        // EnemySpawner.Instance.StartNextWave(); Uncomment when EnemySpawner is ready
     }
 
     public void SetWaveLabel(string text)
@@ -47,11 +81,6 @@ public class TopMenu : MonoBehaviour
         {
             gateHealthLabel.text = text;
         }
-    }
-
-    private void OnPlayButtonClicked()
-    {
-        // Start the wave
     }
 
     private void OnDestroy()
