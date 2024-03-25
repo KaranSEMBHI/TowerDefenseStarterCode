@@ -22,13 +22,13 @@ public class TopMenu : MonoBehaviour
 
         root = uiDocument.rootVisualElement;
 
-        waveLabel = root.Q<Label>("wave");
+        waveLabel = root.Q<Label>("Wave");
         if (waveLabel == null)
         {
             Debug.LogError("Wave label not found in the UI Document.");
         }
 
-        creditsLabel = root.Q<Label>("credits");
+        creditsLabel = root.Q<Label>("Credits");
         if (creditsLabel == null)
         {
             Debug.LogError("Credits label not found in the UI Document.");

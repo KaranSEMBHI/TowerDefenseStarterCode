@@ -1,72 +1,136 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    public GameObject TowerMenu;
-    private TowerMenu towerMenu;
+    // Public references to UI components, set these in the Unity Editor.
+    public TowerMenu towerMenu;
+    public TopMenu topMenu;
 
     public List<GameObject> Archers;
     public List<GameObject> Swords;
     public List<GameObject> Wizards;
 
-    // Variabele voor het bijhouden van de geselecteerde ConstructionSite
     private ConstructionSite selectedSite;
+    private int credits = 200; // Default starting credits
+    private int health = 10; // Default starting gate health
+    private int currentWave = 0; // Default starting wave
 
-    // Awake is called when the script instance is being loaded
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // Optional: Maak het persistent tussen scenes
+            DontDestroyOnLoad(gameObject); 
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Destroy(gameObject); // Zorgt ervoor dat er geen dubbele instanties zijn
+            Destroy(gameObject); 
+            Destroy(gameObject);
         }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
-        towerMenu = TowerMenu.GetComponent<TowerMenu>();
+        StartGame();
     }
 
-    public void SelectSite(ConstructionSite site)
+    void StartGame()
     {
-        // Onthoud de geselecteerde site
-        selectedSite = site;
+        credits = 200; // Initialize with starting credits
+        health = 10;   // Initialize with starting gate health
+        currentWave = 0; // Initialize starting wave
 
-        // Controleer of towerMenu niet null is
-        if (towerMenu != null)
+
+        UpdateUI(); // Update UI with initial values
+    }
+
+    public void UpdateUI()
+    {
+        // Update all UI elements accordingly
+        if (topMenu != null)
         {
-            // Gebruik de reeds bestaande referentie naar TowerMenu
-            towerMenu.SetSite(site);
+            topMenu.SetCreditsLabel("Credits: " + credits);
+            topMenu.SetGateHealthLabel("Gate Health: " + health);
+            topMenu.SetWaveLabel("Wave: " + currentWave);
         }
         else
         {
-            // Log een fout als TowerMenu om een of andere reden null is.
-            Debug.LogError("TowerMenu component is null in GameManager.");
+            Debug.LogError("TopMenu reference not set in the GameManager.");
         }
+    }
+
+
+    public void AttackGate()
+    {
+        health -= 1;
+        UpdateUI();
+    }
+
+    public void AddCredits(int amount)
+    {
+        credits += amount;
+        UpdateUI();
+    }
+
+    public void RemoveCredits(int amount)
+    {
+        credits -= amount;
+        UpdateUI();
+    }
+
+    public int GetCredits()
+    {
+        return credits;
+    }
+
+    public int GetCost(Enums.TowerType type, Enums.SiteLevel level, bool selling = false)
+    {
+        // Placeholder logic, replace with your actual cost calculation
+        int cost = 100; // Replace this with your cost logic
+        switch (type)
+        {
+            case Enums.TowerType.Archer:
+                cost = level == Enums.SiteLevel.Level1 ? 50 : level == Enums.SiteLevel.Level2 ? 75 : 100;
+                break;
+            case Enums.TowerType.Sword:
+                // Define costs for Sword towers based on level
+                break;
+            case Enums.TowerType.Wizard:
+                // Define costs for Wizard towers based on level
+                break;
+        }
+        return selling ? cost / 2 : cost;
     }
 
     public void Build(Enums.TowerType type, Enums.SiteLevel level)
     {
-        // Controleer of er een site geselecteerd is. Zo niet, log een fout en keer terug.
+        // Step 1: Check if a construction site is selected
         if (selectedSite == null)
         {
-            Debug.LogError("Er is geen bouwplaats geselecteerd. Kan de toren niet bouwen.");
-            return; // Stop de methode hier als er geen site geselecteerd is.
+            Debug.LogError("No construction site selected. Cannot build tower.");
+            return; // Stop the method here if there's no site selected
         }
 
-        GameObject towerPrefab = null;
+        // Calculate the cost for the desired tower type and level
+        int cost = GetCost(type, level);
 
-        // Trek 1 af van de level waarde om de correcte index te krijgen
-        int prefabIndex = (int)level - 1;
+        // Step 2: Check if there are enough credits to build the tower
+        if (credits < cost)
+        {
+            Debug.LogError("Not enough credits to build.");
+            return;
+        }
+
+        // Deduct the cost from the player's credits
+        RemoveCredits(cost);
+
+        // Determine the correct prefab based on the tower type and its level
+        GameObject towerPrefab = null;
+        int prefabIndex = (int)level - 1; // Adjust level to zero-based index
 
         switch (type)
         {
@@ -81,39 +145,44 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
+        // Step 3: Verify the towerPrefab and instantiate the tower
         if (towerPrefab == null)
         {
-            Debug.LogError("Geen tower prefab gevonden voor het geselecteerde type en niveau.");
+            Debug.LogError("No tower prefab found for the selected type and level.");
             return;
         }
 
-        // Gebruik de WorldPosition van de selectedSite voor het positioneren van de nieuwe toren
         GameObject tower = Instantiate(towerPrefab, selectedSite.WorldPosition, Quaternion.identity);
 
-        // Gebruik de SetTower methode van de ConstructionSite om de nieuwe toren in te stellen en te configureren
+        // Configure the newly instantiated tower
         selectedSite.SetTower(tower, level, type);
 
+        // Step 4: Handle final adjustments, such as UI updates
         if (towerMenu != null)
         {
-            towerMenu.SetSite(null); // Verberg het towerMenu
+            towerMenu.SetSite(null); // Assuming this hides the tower menu
         }
+    }
+
+
+    public void SelectSite(ConstructionSite site)
+    {
+        selectedSite = site;
+        towerMenu?.SetSite(site);
     }
 
     public void DestroyTower()
     {
         if (selectedSite == null)
         {
-            Debug.LogError("Er is geen bouwplaats geselecteerd. Kan de toren niet verwijderen.");
+            Debug.LogError("No construction site selected. Cannot remove tower.");
             return;
         }
 
-        // Roep de RemoveTower methode aan van de selectedSite
+        int refund = GetCost(selectedSite.TowerType, selectedSite.Level, selling: true);
+        AddCredits(refund);
         selectedSite.RemoveTower();
-
-        // Verberg het towerMenu als dat nodig is
-        if (towerMenu != null)
-        {
-            towerMenu.SetSite(null);
-        }
+        towerMenu?.SetSite(null);
     }
 }
+
