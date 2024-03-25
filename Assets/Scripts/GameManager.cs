@@ -18,6 +18,9 @@ public class GameManager : MonoBehaviour
     private int health = 10; // Default starting gate health
     private int currentWave = 0; // Default starting wave
 
+    private bool waveActive = false;
+
+
     void Awake()
     {
         if (Instance == null)
@@ -40,13 +43,13 @@ public class GameManager : MonoBehaviour
 
     void StartGame()
     {
-        credits = 200; // Initialize with starting credits
-        health = 10;   // Initialize with starting gate health
-        currentWave = 0; // Initialize starting wave
-
-
-        UpdateUI(); // Update UI with initial values
+        credits = 200;
+        health = 10;
+        currentWave = 0;
+        waveActive = false; // Zorg dat waveActive false is bij de start van het spel
+        UpdateUI();
     }
+
 
     public void UpdateUI()
     {
@@ -61,6 +64,19 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogError("TopMenu reference not set in the GameManager.");
         }
+    }
+    public void StartWave()
+    {
+        currentWave++;
+        topMenu.SetWaveLabel("Wave: " + currentWave);
+        waveActive = true;
+        EnemySpawner.Instance.StartWave(currentWave); // Zorg ervoor dat deze methode bestaat in je EnemySpawner script.
+    }
+
+    public void EndWave()
+    {
+        waveActive = false;
+        topMenu.EnableWaveButton(); // Implementeer deze methode in TopMenu om de wave button weer in te schakelen.
     }
 
 

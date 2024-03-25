@@ -11,6 +11,8 @@ public class EnemySpawner : MonoBehaviour
 
     private int currentWave = 0;
 
+    private int ufoCounter = 0;
+
     private void Awake()
     {
         if (Instance == null)
@@ -73,5 +75,37 @@ public class EnemySpawner : MonoBehaviour
         // This is just a placeholder and needs actual implementation
         Debug.Log($"Spawning enemies for wave {waveNumber}.");
     }
+    public void StartWave(int number)
+    {
+        ufoCounter = 0;
+        switch (number)
+        {
+            case 1:
+                InvokeRepeating("StartWave1", 1f, 1.5f);
+                break;
+                // Voeg hier meer cases toe voor aanvullende waves
+        }
+    }
+
+    public void StartWave1()
+    {
+        ufoCounter++;
+        if (ufoCounter % 6 <= 1) return;
+        if (ufoCounter < 30)
+        {
+            SpawnEnemy(0, Enums.Path.Path1);
+        }
+        else
+        {
+            SpawnEnemy(1, Enums.Path.Path1); // Het laatste vijand zal niveau 2 zijn
+        }
+        if (ufoCounter > 30)
+        {
+            CancelInvoke("StartWave1");
+            GameManager.Instance.EndWave(); // Laat GameManager weten dat de wave is geëindigd.
+        }
+    }
+
+
 
 }

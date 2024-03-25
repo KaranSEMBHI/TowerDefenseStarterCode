@@ -11,6 +11,8 @@ public class TopMenu : MonoBehaviour
     private UIDocument uiDocument;
 
     private VisualElement root;
+
+
     void Start()
     {
         uiDocument = GetComponent<UIDocument>();
@@ -53,11 +55,18 @@ public class TopMenu : MonoBehaviour
 
     private void OnPlayButtonClicked()
     {
-        // The logic to start the wave should be implemented here
-        // Make sure that the EnemySpawner has a StartNextWave method implemented
-        Debug.Log("Play button clicked");
-        // EnemySpawner.Instance.StartNextWave(); Uncomment when EnemySpawner is ready
+        GameManager.Instance.StartWave();
+        playButton.SetEnabled(false); // Schakel de playButton uit
     }
+
+    public void EnableWaveButton()
+    {
+        if (playButton != null)
+        {
+            playButton.SetEnabled(true);
+        }
+    }
+
 
     public void SetWaveLabel(string text)
     {
