@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/menuIntro.uss?fileID=7433441132597879392&amp;guid=6b449e1c692ecbf4a977733f3b28b6ae&amp;type=3#menuIntro" />
+    <ui:Button text="Play" parse-escape-sequences="true" display-tooltip-when-elided="true" name="playButtonIntro" class="PlayIntro" />
+    <ui:Button text="Quit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="quitButtonIntro" class="QuitIntro" />
+    <ui:TextField picking-mode="Ignore" label="NAME:" value="filler text" name="nameFillerText" class="nameFiller" />
+</ui:UXML>
