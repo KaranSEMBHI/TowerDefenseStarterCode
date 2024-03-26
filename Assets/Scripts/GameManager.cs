@@ -5,7 +5,6 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    // Public references to UI components, set these in the Unity Editor.
     public TowerMenu towerMenu;
     public TopMenu topMenu;
 
@@ -14,24 +13,23 @@ public class GameManager : MonoBehaviour
     public List<GameObject> Wizards;
 
     private ConstructionSite selectedSite;
-    private int credits = 200; // Default starting credits
-    private int health = 10; // Default starting gate health
-    private int currentWave = 0; // Default starting wave
+    private int credits = 200;
+    private int health = 10;
+    private int currentWave = 0;
 
     private bool waveActive = false;
-
+    private int enemiesInGameCounter = 0;
+    public int totalWaves;
 
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); 
             DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Destroy(gameObject); 
             Destroy(gameObject);
         }
     }
@@ -46,14 +44,12 @@ public class GameManager : MonoBehaviour
         credits = 200;
         health = 10;
         currentWave = 0;
-        waveActive = false; // Zorg dat waveActive false is bij de start van het spel
+        waveActive = false;
         UpdateUI();
     }
 
-
     public void UpdateUI()
     {
-        // Update all UI elements accordingly
         if (topMenu != null)
         {
             topMenu.SetCreditsLabel("Credits: " + credits);
@@ -65,44 +61,24 @@ public class GameManager : MonoBehaviour
             Debug.LogError("TopMenu reference not set in the GameManager.");
         }
     }
-    public void StartWave()
+
+    // Veranderd om de Tower eigenschap te gebruiken.
+    public void DestroyTower()
     {
-        currentWave++;
-        topMenu.SetWaveLabel("Wave: " + currentWave);
-        waveActive = true;
-        EnemySpawner.Instance.StartWave(currentWave); // Zorg ervoor dat deze methode bestaat in je EnemySpawner script.
+        if (selectedSite != null && selectedSite.Tower != null) // Gebruik de Tower eigenschap in plaats van de tower variabele
+        {
+            // Mogelijk moet je ook credits teruggeven aan de speler, afhankelijk van je spelregels
+            int refundAmount = GetCost(selectedSite.TowerType, selectedSite.Level, true); // true omdat het verkopen is
+            AddCredits(refundAmount);
+
+            selectedSite.RemoveTower(); // Deze methode bestaat al in je ConstructionSite class 
+            UpdateUI(); // Update de gebruikersinterface om veranderingen te reflecteren
+        }
+        else
+        {
+            Debug.LogError("Geen toren geselecteerd om te vernietigen.");
+        }
     }
-
-    public void EndWave()
-    {
-        waveActive = false;
-        topMenu.EnableWaveButton(); // Implementeer deze methode in TopMenu om de wave button weer in te schakelen.
-    }
-
-
-    public void AttackGate()
-    {
-        health -= 1;
-        UpdateUI();
-    }
-
-    public void AddCredits(int amount)
-    {
-        credits += amount;
-        UpdateUI();
-    }
-
-    public void RemoveCredits(int amount)
-    {
-        credits -= amount;
-        UpdateUI();
-    }
-
-    public int GetCredits()
-    {
-        return credits;
-    }
-
     public int GetCost(Enums.TowerType type, Enums.SiteLevel level, bool selling = false)
     {
         // Placeholder logic, replace with your actual cost calculation
@@ -121,6 +97,7 @@ public class GameManager : MonoBehaviour
         }
         return selling ? cost / 2 : cost;
     }
+
 
     public void Build(Enums.TowerType type, Enums.SiteLevel level)
     {
@@ -186,19 +163,64 @@ public class GameManager : MonoBehaviour
         selectedSite = site;
         towerMenu?.SetSite(site);
     }
-
-    public void DestroyTower()
+    public void StartWave()
     {
-        if (selectedSite == null)
-        {
-            Debug.LogError("No construction site selected. Cannot remove tower.");
-            return;
-        }
+        enemiesInGameCounter = 0;
+        currentWave++;
+        topMenu.SetWaveLabel("Wave: " + currentWave);
+        waveActive = true;
+        EnemySpawner.Instance.StartWave(currentWave);
+    }
 
-        int refund = GetCost(selectedSite.TowerType, selectedSite.Level, selling: true);
-        AddCredits(refund);
-        selectedSite.RemoveTower();
-        towerMenu?.SetSite(null);
+    public void EndWave()
+    {
+        waveActive = false;
+        topMenu.EnableWaveButton();
+    }
+
+    public void AttackGate()
+    {
+        health -= 1;
+        UpdateUI();
+    }
+
+    public void AddCredits(int amount)
+    {
+        credits += amount;
+        UpdateUI();
+    }
+
+    public void RemoveCredits(int amount)
+    {
+        credits -= amount;
+        UpdateUI();
+    }
+
+    public void AddInGameEnemy()
+    {
+        enemiesInGameCounter++;
+    }
+
+    public void RemoveInGameEnemy()
+    {
+        enemiesInGameCounter--;
+
+        if (!waveActive && enemiesInGameCounter <= 0)
+        {
+            if (currentWave == totalWaves)
+            {
+                HandleGameEnd();
+            }
+            else
+            {
+                topMenu.EnableWaveButton();
+            }
+        }
+    }
+
+    private void HandleGameEnd()
+    {
+        Debug.Log("Congratulations! You've defeated all waves!");
+        // Implement your game end logic here
     }
 }
-

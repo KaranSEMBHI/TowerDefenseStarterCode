@@ -13,7 +13,7 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
-        //..
+        // Initialisation logic here
     }
 
     void Update()
@@ -21,20 +21,15 @@ public class Enemy : MonoBehaviour
         float step = speed * Time.deltaTime;
         transform.position = Vector2.MoveTowards(transform.position, target.transform.position, step);
 
-        // Check if the enemy has reached its current target waypoint
         if (Vector2.Distance(transform.position, target.transform.position) < 0.1f)
         {
-            // Get the next target waypoint
             target = EnemySpawner.Instance.RequestTarget(path, pathIndex);
             pathIndex++;
 
-            // If there's no next target, the enemy has reached the end of the path
             if (target == null)
             {
-                // Attack the gate before being destroyed
                 GameManager.Instance.AttackGate();
-
-                // Destroy the enemy game object
+                GameManager.Instance.RemoveInGameEnemy();
                 Destroy(gameObject);
             }
         }
@@ -42,14 +37,13 @@ public class Enemy : MonoBehaviour
 
     public void Damage(int damage)
     {
-        // Verminder de gezondheidswaarde
         health -= damage;
 
         if (health <= 0)
         {
             GameManager.Instance.AddCredits(points);
+            GameManager.Instance.RemoveInGameEnemy();
             Destroy(gameObject);
         }
     }
-
 }

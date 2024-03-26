@@ -40,10 +40,11 @@ public class EnemySpawner : MonoBehaviour
             return;
         }
 
-        var newEnemy = Instantiate(Enemies[type], selectedPath[0].transform.position, selectedPath[0].transform.rotation);
+        var newEnemy = Instantiate(Enemies[type], selectedPath[0].transform.position, Quaternion.identity);
         var script = newEnemy.GetComponent<Enemy>();
         script.path = path;
         script.target = selectedPath[1];
+        GameManager.Instance.AddInGameEnemy(); // Toevoegen van vijanden aan de game manager teller.
     }
 
     private void SpawnTester()
@@ -60,6 +61,7 @@ public class EnemySpawner : MonoBehaviour
         else
             return null;
     }
+
     public void StartNextWave()
     {
         // Increment the current wave
@@ -75,6 +77,7 @@ public class EnemySpawner : MonoBehaviour
         // This is just a placeholder and needs actual implementation
         Debug.Log($"Spawning enemies for wave {waveNumber}.");
     }
+
     public void StartWave(int number)
     {
         ufoCounter = 0;
@@ -105,7 +108,4 @@ public class EnemySpawner : MonoBehaviour
             GameManager.Instance.EndWave(); // Laat GameManager weten dat de wave is geëindigd.
         }
     }
-
-
-
 }

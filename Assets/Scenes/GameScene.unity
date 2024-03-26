@@ -335,7 +335,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef4528bab9fd56f459c13c54577b8a9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TowerMenu: {fileID: 1146081317}
+  towerMenu: {fileID: 1146081320}
+  topMenu: {fileID: 724871317}
   Archers:
   - {fileID: 4851529039025728097, guid: df76bce859338d94692f3fc23dac7f4e, type: 3}
   - {fileID: 8229298772793633829, guid: 3847c5bf844848842ab01ad79b936b2d, type: 3}
@@ -348,6 +349,7 @@ MonoBehaviour:
   - {fileID: 516051284523165080, guid: 3f24691902614ad46beb32d1607e59bb, type: 3}
   - {fileID: 420581005814077498, guid: 8eebf136daec93741afc05b11e8f88b9, type: 3}
   - {fileID: 6684251222625139974, guid: 54efc8c0bf7fddf468b24b370e606daf, type: 3}
+  totalWaves: 0
 --- !u!4 &401039252
 Transform:
   m_ObjectHideFlags: 0
