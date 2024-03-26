@@ -1,30 +1,64 @@
 using UnityEngine;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+[System.Serializable]
+public class HighScore
+{
+    public string Name;
+    public int Score;
+}
 
 public class HighScoreManager : MonoBehaviour
 {
-    // Static variable voor de singleton instance.
     public static HighScoreManager Instance { get; private set; }
+    public List<HighScore> HighScores = new List<HighScore>();
 
-    // Publieke properties.
     public string PlayerName { get; set; }
     public bool GameIsWon { get; set; }
 
-    // Zorg dat dit een singleton is.
     private void Awake()
     {
-        // Als er al een instantie bestaat en het is niet deze, vernietig dan deze.
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
         }
         else
         {
-            // Zet deze als de singleton instance.
             Instance = this;
-            // Optioneel: Als je wilt dat de manager blijft bestaan tussen scenes, ont-comment deze regel.
-            // DontDestroyOnLoad(gameObject);
         }
     }
 
-    // Hier kun je andere methoden voor je HighScoreManager toevoegen.
+    public void AddHighScore(int score)
+    {
+        HighScores.Add(new HighScore { Name = PlayerName, Score = score });
+        HighScores = HighScores.OrderByDescending(hs => hs.Score).ToList();
+        if (HighScores.Count > 5)
+        {
+            HighScores.RemoveAt(HighScores.Count - 1);
+        }
+        SaveHighScores();
+    }
+
+    void Start()
+    {
+        LoadHighScores();
+    }
+
+    private void SaveHighScores()
+    {
+        string json = JsonUtility.ToJson(new { HighScores = HighScores }, true);
+        File.WriteAllText(Application.persistentDataPath + "/highscores.json", json);
+    }
+
+    private void LoadHighScores()
+    {
+        string path = Application.persistentDataPath + "/highscores.json";
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            HighScores = JsonUtility.FromJson<List<HighScore>>(json);
+        }
+    }
 }
