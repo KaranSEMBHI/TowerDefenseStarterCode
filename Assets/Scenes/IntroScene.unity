@@ -218,8 +218,9 @@ GameObject:
   - component: {fileID: 1277501554}
   - component: {fileID: 1277501553}
   - component: {fileID: 1277501555}
+  - component: {fileID: 1277501556}
   m_Layer: 0
-  m_Name: UiDocButtons
+  m_Name: IntroScene
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -268,6 +269,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b92be859310932b438365eccc101c6aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1277501556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1277501552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2829ba1997429a44fa1052264a5efa18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuMusic: {fileID: 0}
+  gameMusic: {fileID: 0}
+  audioSourcePrefab: {fileID: 0}
+  uiSounds: []
+  towerSounds: []
+  fxs: []
 --- !u!1 &1469699958
 GameObject:
   m_ObjectHideFlags: 0
